@@ -101,7 +101,7 @@ class ApplicationController < ActionController::Base
     locale = if user && user.language != 'default'
       user.language
     else
-      http_accept_language.language_region_compatible_from(I18n.available_locales)
+      Rails.configuration.default_locale.presence || http_accept_language.language_region_compatible_from(I18n.available_locales)
     end
 
     begin
@@ -235,7 +235,7 @@ class ApplicationController < ActionController::Base
       path = if allow_greenlight_accounts?
         signin_path
       elsif Rails.configuration.loadbalanced_configuration
-        omniauth_login_url(:bn_launcher)
+        "#{Rails.configuration.relative_url_root}/auth/bn_launcher"
       else
         signin_path
       end
